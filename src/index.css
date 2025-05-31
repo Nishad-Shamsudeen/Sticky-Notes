@@ -16,3 +16,14 @@ body{
     /* text-align: center; */
     
 }
+.container-margin{
+    padding-left: 10%;
+    padding-right: 10%;
+
+}
+/* .btn-top{
+    top: 70px;
+    position: fixed;
+    top: 30px;
+    left: 30px;
+} */

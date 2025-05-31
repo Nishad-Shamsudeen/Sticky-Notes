@@ -1,21 +1,25 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useContext, useState, useRef, useEffect } from 'react'
 import './AddNote.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faBars, faThumbtackSlash, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
 import { NotesContext } from '../../Context/NotesContext';
 import TagNote from '../TagNote/TagNote';
+import Archive from '../Archive/Archive';
+import { noteColors } from '../../Store/ColorPalette';
 
 function AddNote() {
 
-
-    const editorRef = useRef(null);
-    const [notePinedFlag, setNotePinedFlag] = useState(false)//Dummy state
-    const [checkNote, setCheckNote] = useState(false)
-    const [downMenu, setDownMenu] = useState(false)
-
-
+    const editorRef = useRef({});
+    const [checkNote, setCheckNote] = useState(true)
     const { newDivs, setNewDivs } = useContext(NotesContext)
+
+    useEffect(() => {
+        const storedNotes = localStorage.getItem('stickyNotes');
+        if (storedNotes) {
+            setNewDivs(JSON.parse(storedNotes));
+        }
+    }, []);
     // Dynamic Notes Creation...!!!!!
     const handleAddNote = () => {
         // console.log("testing");
@@ -25,9 +29,14 @@ function AddNote() {
             id: Date.now(),
             content: "",
             x: 100,
-            y: 100,
+            y: 120,
             pinned: false,
-            heading: ""
+            heading: "",
+            markDownMenu: false,
+            archive: "",
+            archiveFlag: false,
+            //Adding colors for notes no pattern
+            color: noteColors[Math.floor(Math.random() * noteColors.length)],
         }
         setNewDivs([...newDivs, newDivForNote])
         saveNotes()
@@ -35,40 +44,43 @@ function AddNote() {
 
     //Removing(Closing) Notes...!!!
     const handleClose = (divId) => {
+        console.log("current div Id.." + divId);
+        console.log("Current note list...");
+        console.log(newDivs);
+
+
         const filterArr = newDivs.filter(newDiv => newDiv.id !== divId)
+        console.log("Note list after filter");
+
+        console.log(filterArr);
+        // Clean up the ref
+        delete editorRef.current[divId];
+
         setNewDivs(filterArr)
 
     }
-    //Adding & Editing Notes...!!!
-    //Old Notes Using Text Area...remove after complete the project
-    // const handleUpdateNote = (targetValue, IdToUpdate) => {
-
-    //     const updatedDivs = newDivs.map(div => {
-    //         if (div.id === IdToUpdate) {
-    //             return { ...div, content: targetValue }
-    //         }
-    //         return div;
-    //     })
-    //     setNewDivs(updatedDivs)
-    //     saveNotes()
-    // }
 
     //Adding & Editing Notes Using DIV...!!!
     const handleInputDiv = (noteId) => {
+
         const updatedDivs = newDivs.map(div => {
+
             if (div.id === noteId) {
-                // Storing the inner text of the editable div into state using * editorRef.current.innerText *..!!
-                return { ...div, content: editorRef.current.innerText }
+                return {
+                    ...div,
+                    content: editorRef.current[noteId]?.innerText || ''
+                };
             }
             return div;
         })
         setNewDivs(updatedDivs)
+        //Save to local storage
         saveNotes()
     }
 
     //Saving Notes in Loacal Storage...!!!
     function saveNotes() {
-        localStorage.setItem('sticyNotes', JSON.stringify(newDivs))
+        localStorage.setItem('stickyNotes', JSON.stringify(newDivs))
     }
     //Drag & Drop Notes...!!!
     const handleDrag = (e, id) => {
@@ -91,7 +103,7 @@ function AddNote() {
             if (newDiv.id === id) {
                 return {
                     ...newDiv,
-                    x: newDiv.x,
+                    x: newDiv.x,    //Position of the Note
                     y: newDiv.y,
                     pinned: !newDiv.pinned
                 };
@@ -102,25 +114,43 @@ function AddNote() {
     }
 
     //Handle Mark Down Menu
-    const handleDownMenuIcon = () => {
+    const handleDownMenuIcon = (id) => {
         //Mark Down Menu Open and Close...!!!
-        downMenu ? setDownMenu(false) : setDownMenu(true)
+        const downMenuOn = newDivs.map(newDiv => {
+            if (newDiv.id === id) {
+
+                return {
+                    ...newDiv,
+
+                    markDownMenu: !newDiv.markDownMenu
+                };
+            }
+            return newDiv;
+        })
+        setNewDivs(downMenuOn)
     }
-    const formatText = (command) => {
-        downMenu ? setDownMenu(false) : setDownMenu(true)
-        document.execCommand(command, false, null);
-        editorRef.current.focus();
+    //Note text styles changes here...BOLD,ITALIC,UNDERLINE!!!
+    const formatText = (command, id) => {
+        const editor = editorRef.current[id];
+        if (editor) {
+            editor.focus();//focusing selected text
+            document.execCommand(command, false, null);
+        }
+        handleDownMenuIcon(id)  //Mark Down Menu Open and Close...!!!
+        alert(id)
     }
 
     return (
-        <div className='add-container'>
-            <button className='add-new' onClick={handleAddNote}><FontAwesomeIcon className="icon" icon={faPlus} />Add Note</button>
+        <div className='add-container '>
+            <button className='add-new ' onClick={handleAddNote}><FontAwesomeIcon className="icon btn-top" icon={faPlus} />Add Note</button>
             <div className="sticky-note-container">
                 {/* Dynamic Notes Creation...!!!!!  */}
 
                 {
                     checkNote ? newDivs.map((newDiv) => (
-                        <div className="sticky-note" onMouseDown={() => {
+
+
+                        <div className="sticky-note" key={newDiv.id} onMouseDown={() => {
                             if (!newDiv.pinned) {
                                 const handleMouseMove = (eventMove) => handleDrag(eventMove, newDiv.id)
                                 //Cleanup Function....!!!
@@ -137,8 +167,14 @@ function AddNote() {
                                 left: newDiv.x,
                                 top: newDiv.y,
                                 cursor: 'move',
-                                position: newDiv.pinned ? 'fixed' : 'absolute'
+                                position: newDiv.pinned ? 'fixed' : 'absolute',
+                                background: newDiv.color
                             }}>
+
+
+
+                            {/* Archive component...!!! */}
+                            <Archive noteId={newDiv.id} noteContent={newDiv.content} />
                             {/* Tag notes component...!!! */}
                             <TagNote noteId={newDiv.id} />
 
@@ -147,22 +183,48 @@ function AddNote() {
 
                             {/* Adding Note Text*/}
 
+
                             <div
                                 className="editable-area sticky-note-div"
-                                ref={editorRef}
+                                // *** MAKING THE REF DYNAMICALLY ***
+                                //cleans up every time its UNMOUNT
+
+                                // ref={(el) => {
+                                //     if (el && !editorRef.current[newDiv.id]) {
+                                //         editorRef.current[newDiv.id] = el;
+                                //         el.innerText = newDiv.content;
+                                //     }
+                                // }}
+
+                                //Below code is reversing...
+                                ref={(el) => {
+                                    if (el && !editorRef.current[newDiv.id]) {
+                                        editorRef.current[newDiv.id] = el;
+                                        el.innerText = newDiv.content; // only once at first render
+                                    }
+                                }}
+                                // *** *** **** ****
+
                                 contentEditable={true}
                                 suppressContentEditableWarning={true}
+                                //onBlur={() => handleInputDiv(newDiv.id)}
                                 onInput={() => handleInputDiv(newDiv.id)}
+                            //dangerouslySetInnerHTML={{ __html: newDiv.content }}
+
+
+                            // {...(!newDiv.archiveFlag ? {} : { dangerouslySetInnerHTML: { __html: newDiv.content } })}
+
+
                             >
                             </div>
 
                             {/* Mark Down And New Notes */}
-                            <FontAwesomeIcon icon={faEllipsisVertical} className='mark-down-menu' onClick={handleDownMenuIcon} />
-                            <div className={downMenu ? `down-menu-content` : `down-menu-content-off`}>
+                            <FontAwesomeIcon icon={faEllipsisVertical} className='mark-down-menu' onClick={() => handleDownMenuIcon(newDiv.id)} />
+                            <div className={newDiv.markDownMenu ? `down-menu-content` : `down-menu-content-off`}>
                                 <ul>
-                                    <li onClick={() => formatText("bold")}>Bold</li>
-                                    <li onClick={() => formatText("italic")}>Italic</li>
-                                    <li onClick={() => formatText("underline")}>Underline</li>
+                                    <li onClick={() => formatText("bold", newDiv.id)}>Bold</li>
+                                    <li onClick={() => formatText("italic", newDiv.id)}>Italic</li>
+                                    <li onClick={() => formatText("underline", newDiv.id)}>Underline</li>
 
                                 </ul>
                             </div>

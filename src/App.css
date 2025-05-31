@@ -1,3 +1,7 @@
 /* .main-container{
     height: 100vh;
 } */
+ body{
+    height: 100vh;
+    background-color:#98d6ff
+ }

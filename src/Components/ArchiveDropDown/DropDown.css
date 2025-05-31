@@ -1,0 +1,149 @@
+.archive-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 10%;
+    background-color: #84caf8;
+    color: #1E2A38;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 130;
+    width: 350px;
+    height: 300px;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 1.4s ease, opacity 1.4s ease;
+    /* overflow: hidden; */
+}
+
+.archive-dropdown.show {
+    max-height: 500px;
+    /* large enough for full content */
+    opacity: 1;
+}
+
+.archive-dropdown p {
+    margin: 8px 0;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.tool-tip {
+    background-color: #a9dbff;
+    display: inline-block;
+    width: 111px;
+    text-align: center;
+    height: 35px;
+    /* font-size: 20px; */
+    font-weight: 700;
+    position: absolute;
+    top: -6%;
+    left: -8%;
+    /* text-align: center; */
+    border-radius: 8px;
+    padding: 6px 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: #1E2A38;
+}
+
+.t-hidden {
+    display: none;
+}
+
+.archive-dropdown {
+    padding: 20px;
+}
+
+.archive-dropdown h4 {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+/* ....Media Query.... */
+
+@media (max-width:855px) {
+
+    .archive-dropdown {
+        top: 62px;
+        right: 26%;
+        height: 210px;
+        width: 250px;
+    }
+
+    .archive-dropdown h4 {
+        font-size: 17px;
+        font-weight: 700;
+    }
+}
+
+@media (max-width:760px) {
+
+    .archive-dropdown {
+
+        right: 26.4%;
+
+    }
+}
+
+@media (max-width:650px) {
+
+    .archive-dropdown {
+
+        right: 32%;
+
+    }
+}
+
+@media (max-width:580px) {
+
+    .archive-dropdown {
+
+        right: 37%;
+
+    }
+}
+
+@media (max-width:420px) {
+
+    .archive-dropdown {
+
+        right: 49%;
+        height: 210px;
+        width: 166px;
+
+    }
+
+}
+
+@media (max-width:450px) {
+
+    .archive-dropdown {
+
+        right: 48%;
+        height: 210px;
+        width: 166px;
+
+    }
+
+}
+
+@media (max-width:360px) {
+
+    .archive-dropdown {
+
+        right: 56%;
+        height: 210px;
+        width: 150px;
+
+    }
+
+}
+@media (max-width:350px) {
+
+    .archive-dropdown {
+        right: 56%;
+        height: 210px;
+        width: 150px;
+    }
+
+}

@@ -9,10 +9,6 @@ function TagNote({ noteId }) {
   const [tagOn, setTagOn] = useState(false)
   const { newDivs, setNewDivs } = useContext(NotesContext)
   const selectRef = useRef();
-  // const options = [
-  //   { value: 'work', label: 'Work' },
-  //   { value: 'personal', label: 'Personal' },
-  // ];
 
   const handleTagIcon = () => {
     //Tag Menu Open and Close...!!!
@@ -25,14 +21,12 @@ function TagNote({ noteId }) {
     //Adding tag as heading of the note
     const tagHeading = newDivs.map(newDiv => {
       if (noteId === newDiv.id) {
-        {
-          return {
-            ...newDiv,
-            heading: tagValue
-          }
+        return {
+          ...newDiv,
+          heading: tagValue
         }
-        return newDiv;
       }
+      return newDiv;
     })
     setNewDivs(tagHeading)
   }
@@ -48,13 +42,6 @@ function TagNote({ noteId }) {
           <li onClick={() => handleTagList("Others")}>Others</li>
         </ul>
       </div>
-      {/* <Select ref={selectRef}
-        options={options}
-        onChange={(selected) => console.log(selected)}
-        className=" select-menu "
-        onClick={() => console.log("Select click is working")}
-      /> */}
-
 
     </div>
   )

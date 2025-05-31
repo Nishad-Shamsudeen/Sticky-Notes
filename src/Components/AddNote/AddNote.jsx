@@ -210,11 +210,6 @@ function AddNote() {
                                 //onBlur={() => handleInputDiv(newDiv.id)}
                                 onInput={() => handleInputDiv(newDiv.id)}
                             //dangerouslySetInnerHTML={{ __html: newDiv.content }}
-
-
-                            // {...(!newDiv.archiveFlag ? {} : { dangerouslySetInnerHTML: { __html: newDiv.content } })}
-
-
                             >
                             </div>
 

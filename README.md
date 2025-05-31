@@ -6,6 +6,10 @@ Step-by-Step
 Clone the repository
 git clone https://github.com/Nishad-Shamsudeen/Sticky-Notes.git
 cd Sticky-Notes
+1. ## npm install
+2. ## npm start
+3. ## Your app will run on http://localhost:3000.
+
 
  ## ChatGPT Integration – Add Note & Drag-and-Drop Functionality
 1. ## Add Note Functionality
@@ -25,3 +29,20 @@ Managing note positions to improve user interaction
 Updating state to persist the new position after drop
 
 This enhanced the UX by allowing users to freely organize their notes within the interface.
+
+## ✨ Features Implemented
+✅ Add sticky notes
+
+✅ Edit note content
+
+✅ Drag notes freely around the screen
+
+✅ Change note colors
+
+✅ Archive and restore notes
+
+✅ Delete notes
+
+✅ Search notes by content
+
+✅ Persistent data storage via localStorage
